@@ -10,6 +10,17 @@ class CustomSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
+      backgroundColor: Color(0xFF1C1C1C),
+      title: Row(children: [
+        Text(
+          'MovieAPI',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
+      ]),
       padding: const EdgeInsets.all(16.0),
       child: TextField(
         decoration: InputDecoration(
