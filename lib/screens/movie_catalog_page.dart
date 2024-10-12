@@ -49,6 +49,7 @@ class _MovieCatalogPageState extends State<MovieCatalogPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Filtramos las películas en base al query
     List filteredMovies = movies.where((movie) {
       final titleLower = movie['title'].toLowerCase();
       return titleLower.contains(query);
@@ -57,11 +58,10 @@ class _MovieCatalogPageState extends State<MovieCatalogPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Movie Catalog'),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(50),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search Movies',
@@ -71,59 +71,58 @@ class _MovieCatalogPageState extends State<MovieCatalogPage> {
               onChanged: searchMovies,
             ),
           ),
-          Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(16.0),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 1,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 2 / 3,
-              ),
-              itemCount: filteredMovies.length,
-              itemBuilder: (context, index) {
-                final movie = filteredMovies[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            MovieDetailsScreen(movie: movie, query: query),
-                      ),
-                    ).then((_) {
-                      searchMovies(query);
-                    });
-                  },
-                  child: Card(
-                    elevation: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Image.network(
-                            'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            movie['title'],
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
+        ),
+      ),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(16.0),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 1,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          childAspectRatio: 2 / 3,
+        ),
+        itemCount: filteredMovies.length,
+        itemBuilder: (context, index) {
+          final movie = filteredMovies[index];
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MovieDetailsScreen(
+                      movie: movie, query: query), // Pasamos la query actual
+                ),
+              ).then((_) {
+                // Al regresar a la página de catálogo, volver a buscar la película
+                searchMovies(query);
+              });
+            },
+            child: Card(
+              elevation: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Image.network(
+                      'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
+                      fit: BoxFit.cover,
+                      width: double.infinity,
                     ),
                   ),
-                );
-              },
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      movie['title'],
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

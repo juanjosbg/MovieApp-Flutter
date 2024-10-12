@@ -15,6 +15,23 @@ class MovieDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(movie['title']),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(50),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Search Movies',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                // Aquí puedes implementar la lógica de búsqueda, si lo deseas.
+                print('Searching: $value');
+              },
+            ),
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -53,20 +70,6 @@ class MovieDetailsScreen extends StatelessWidget {
               child: Text(
                 'Genres: ${movie['genre_ids']?.join(", ") ?? "N/A"}', // Generos (si está disponible)
                 style: TextStyle(fontSize: 16),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search Movies',
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  // Aquí puedes implementar la lógica de búsqueda, si lo deseas.
-                  print('Searching: $value');
-                },
               ),
             ),
           ],
