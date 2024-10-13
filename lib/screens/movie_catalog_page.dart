@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'movie_details_screen.dart';
+import '../utils/favorite_manager.dart'; // Importar el gestor de favoritos
 
 class MovieCatalogPage extends StatefulWidget {
   @override
@@ -47,6 +48,17 @@ class _MovieCatalogPageState extends State<MovieCatalogPage> {
     });
   }
 
+  // Función para alternar el estado de favorito
+  Future<void> toggleFavorite(String movieId) async {
+    bool isFavorite = await FavoriteManager.isFavorite(movieId);
+    if (isFavorite) {
+      await FavoriteManager.removeFavorite(movieId);
+    } else {
+      await FavoriteManager.addFavorite(movieId);
+    }
+    setState(() {}); // Actualizar el estado para reflejar los cambios en la UI
+  }
+
   @override
   Widget build(BuildContext context) {
     // Filtramos las películas en base al query
@@ -84,6 +96,8 @@ class _MovieCatalogPageState extends State<MovieCatalogPage> {
         itemCount: filteredMovies.length,
         itemBuilder: (context, index) {
           final movie = filteredMovies[index];
+          final movieId = movie['id'].toString(); // ID de la película
+
           return GestureDetector(
             onTap: () {
               Navigator.push(
@@ -111,11 +125,39 @@ class _MovieCatalogPageState extends State<MovieCatalogPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      movie['title'],
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Mostrar el título de la película
+                        Expanded(
+                          child: Text(
+                            movie['title'],
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        // Icono de estrella para favoritos
+                        FutureBuilder(
+                          future: FavoriteManager.isFavorite(movieId),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return CircularProgressIndicator();
+                            }
+                            bool isFavorite = snapshot.data ?? false;
+                            return IconButton(
+                              icon: Icon(
+                                isFavorite ? Icons.star : Icons.star_border,
+                                color: isFavorite ? Colors.yellow : Colors.grey,
+                              ),
+                              onPressed: () {
+                                toggleFavorite(movieId); // Alternar favoritos
+                              },
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ],

@@ -1,25 +1,14 @@
-// lib/models/movie.dart
-
+// /lib/models/movie.dart
 class Movie {
-  final int id;
   final String title;
-  final String posterPath;
-  final String overview;
+  final String description;
+  final String cast;
+  final double rating;
 
   Movie({
-    required this.id,
     required this.title,
-    required this.posterPath,
-    required this.overview,
+    required this.description,
+    required this.cast,
+    required this.rating,
   });
-
-  // Método para convertir JSON a una instancia de Movie
-  factory Movie.fromJson(Map<String, dynamic> json) {
-    return Movie(
-      id: json['id'],
-      title: json['title'],
-      posterPath: json['poster_path'],
-      overview: json['overview'],
-    );
-  }
 }

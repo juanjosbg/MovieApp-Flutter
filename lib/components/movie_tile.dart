@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../models/movie.dart'; // Asegúrate de importar tu modelo
 
 class MovieTile extends StatelessWidget {
-  final Movie movie; // Cambiado a tipo Movie
+  final Movie movie;
 
   const MovieTile({required this.movie});
 
